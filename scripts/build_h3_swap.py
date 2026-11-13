@@ -9,11 +9,11 @@ import json
 import os
 import sys
 
-sys.path.insert(0, r"E:\VideoShotSplitter\vogue768")
+sys.path.insert(0, r"E:\h3tools")
 import vogue768_batch as B
 
-BASE = r"E:\VideoShotSplitter\wangliupu"
-TEMPLATE = r"E:\VideoShotSplitter\vogue\h3_template.json"
+BASE = r"E:\h3swap"
+TEMPLATE = r"E:\h3swap\vogue\h3_template.json"
 SRC = os.environ.get("WLP_SRC", "wangliupu_src24.mp4")
 REF1 = "wlp_ref_female.png"     # 慕沛灵
 REF2 = "wlp_ref_male.png"       # 韩立
@@ -207,7 +207,7 @@ def main():
     if not _api_ok():
         print("COMFY_DOWN -> clean_start")
         _sp.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-                 r"E:\VideoShotSplitter\wangliupu\clean_start.ps1"], capture_output=True)
+                 r"E:\h3swap\clean_start.ps1"], capture_output=True)
         for _ in range(40):
             if _api_ok():
                 break

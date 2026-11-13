@@ -41,7 +41,7 @@ E:\ComfyUI\output\minimax_seg_export\<时间戳>\seg_0000.mp4      # 二采成�
 ## 三、ffmpeg 拼接
 
 ```bash
-E:\ComfyUI\venv\Scripts\python.exe E:\VideoShotSplitter\wangliupu\concat_seg.py \
+E:\ComfyUI\venv\Scripts\python.exe E:\h3swap\concat_seg.py \
     <分段目录> <输出 mp4>
 ```
 
@@ -60,7 +60,7 @@ E:\ComfyUI\venv\Scripts\python.exe E:\VideoShotSplitter\wangliupu\concat_seg.py 
 ## 四、抽帧核对
 
 ```bash
-E:\ComfyUI\venv\Scripts\python.exe E:\VideoShotSplitter\wangliupu\seam2.py \
+E:\ComfyUI\venv\Scripts\python.exe E:\h3swap\seam2.py \
     <mp4> <输出目录> 0,100,200,300,412
 ```
 
@@ -68,7 +68,7 @@ E:\ComfyUI\venv\Scripts\python.exe E:\VideoShotSplitter\wangliupu\seam2.py \
 
 ## 五、交付
 
-- 本地交付目录：`/Users/mac/WorkBuddy/Claw/_deliver/wangliupu/`
+- 本地交付目录：`<LOCAL_DELIVER_DIR>/`
 - 命名：`wangliupu_swap_1152x864.mp4`、`wangliupu_swap_768x576.mp4` 这类「主体_方式_规格」格式
-- 局域网页面（可选）：`/Users/mac/WorkBuddy/Claw/wlp_lan/serve.py`，端口 8766，`python3 serve.py --daemon` 启动；页面每 5 秒拉 `/api/state`，出片后自动 scp 回来并挂 `<video>`
+- 局域网页面（可选）：`<LOCAL_LAN_DIR>/serve.py`，端口 8766，`python3 serve.py --daemon` 启动；页面每 5 秒拉 `/api/state`，出片后自动 scp 回来并挂 `<video>`
 - 页面数据源是 Win 端 `snapshot.ps1`（见 `scripts/win_status_probe.ps1`），其中 `$prefix` 必须改成当前任务的输出前缀，否则页面显示的永远是上一个任务

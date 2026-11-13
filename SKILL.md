@@ -12,7 +12,7 @@ agent_created: true
 
 ## 硬性前提（不可协商）
 
-1. **所有推理只在 Windows 机上跑**：`labman00@192.168.10.75`，密钥 `/Users/mac/.workbuddy/keys/workbuddy_win`，ComfyUI `http://127.0.0.1:8188`。Mac 端只做编排、提交帧、轮询、传文件、ffmpeg 抽帧与封装，绝不跑任何模型推理或超分。
+1. **所有推理只在 Windows 机上跑**：`<WIN_USER>@<WIN_HOST>`，密钥 `~/.ssh/id_win_gpu`，ComfyUI `http://127.0.0.1:8188`。Mac 端只做编排、提交帧、轮询、传文件、ffmpeg 抽帧与封装，绝不跑任何模型推理或超分。
 2. **ComfyUI 必须带 `--disable-comfy-compiler` 启动**，否则会随机报 `comfy_aimdo malloc_graph → stack overflow` 或被原生崩溃打死。启动/修复一律用 `scripts/win_clean_start.ps1`。
 3. **成片等长**：`continuityKeepTail` 必须为 `false`，导出走 `pad_or_trim` 裁回源片帧数，不允许把衔接余量算进成片。
 4. **四视图参考图整张使用**，不裁切、不删格、不改动任何一格（见 `references/prompt-playbook.md`）。
@@ -24,7 +24,7 @@ agent_created: true
 3. **写提示词**：按 `references/prompt-playbook.md` 的模板，控制在 **900–1400 字符**，每个人写出具体服装配色、领型、袖型、长度、鞋、发型，并明确「原服装一件都不能留」。超过 3k 字符会压掉换人效果。
 4. **规划分段**：先用 `references/params-and-limits.md` 的实测表定分辨率与段长。当前硬约束：**1152×864 下单段有效生成帧数 ≤56**，超过就掉进换页区（72 帧 305 秒/步、107 帧 744 秒/步）。
 5. **提交**：`scripts/build_h3_swap.py`，全部参数走环境变量（`WLP_W` / `WLP_H` / `WLP_FRAMES` / `WLP_SEGS` / `WLP_CONT` / `WLP_CONT_OVL` / `WLP_NOREFINE` / `WLP_TILING` / `WLP_EXPORT` / `WLP_SEED` / `WLP_PREFIX` / `WLP_SRC` / `WLP_PROMPT` / `WLP_START`）。脚本会在服务掉线时自动用 `win_clean_start.ps1` 拉起。
-6. **监控**：`watch_job.py <prompt_id> <秒>`（在 Win 的 `E:\VideoShotSplitter\vogue768\`）；或读 `http://127.0.0.1:8188/internal/logs/raw` 拿实时进度。日志文件不一定是 `wlp4.err`——取决于哪个启动脚本拉起的实例，**以 API 的内存日志为准**。
+6. **监控**：`watch_job.py <prompt_id> <秒>`（在 Win 的 `E:\h3tools\`）；或读 `http://127.0.0.1:8188/internal/logs/raw` 拿实时进度。日志文件不一定是 `wlp4.err`——取决于哪个启动脚本拉起的实例，**以 API 的内存日志为准**。
 7. **拼接与交付**：`scripts/concat_segments.py` 把分段拼成整片（`-c copy` 无损），ffprobe 核对帧数/分辨率/音轨，抽帧肉眼验收，再取回本地交付目录。
 
 ## 验证门槛（必须照着做）

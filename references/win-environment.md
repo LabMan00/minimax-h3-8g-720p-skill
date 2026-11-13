@@ -4,21 +4,21 @@
 
 | 项 | 值 |
 |---|---|
-| 主机 | `labman00@192.168.10.75`（局域网，Win 11，RTX 4060 Laptop 8 GB / 15.2 GB RAM） |
-| SSH 密钥 | `/Users/mac/.workbuddy/keys/workbuddy_win` |
+| 主机 | `<WIN_USER>@<WIN_HOST>`（局域网，Win 11，RTX 4060 Laptop 8 GB / 15.2 GB RAM） |
+| SSH 密钥 | `~/.ssh/id_win_gpu` |
 | ComfyUI | `http://127.0.0.1:8188`（Win 本机回环，从 Mac 走 ssh 转发或远程执行 curl） |
 | 程序目录 | `E:\ComfyUI` |
-| 业务工作目录 | `E:\VideoShotSplitter\wangliupu`（本流水线的脚本与产物） |
+| 业务工作目录 | `E:\h3swap`（本流水线的脚本与产物） |
 | 分段导出目录 | `E:\ComfyUI\output\minimax_seg_export\<时间戳>\` |
 | 输入素材 | `E:\ComfyUI\input\` |
-| 批量工具目录 | `E:\VideoShotSplitter\vogue768\`（含 `watch_job.py`、`verify_submit.py`） |
+| 批量工具目录 | `E:\h3tools\`（含 `watch_job.py`、`verify_submit.py`） |
 
 ssh 调用统一加：
 
 ```bash
-ssh -i /Users/mac/.workbuddy/keys/workbuddy_win \
+ssh -i ~/.ssh/id_win_gpu \
     -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes \
-    labman00@192.168.10.75 "<命令>"
+    <WIN_USER>@<WIN_HOST> "<命令>"
 ```
 
 Windows 上跑 PowerShell 脚本务必用 `-NoProfile -ExecutionPolicy Bypass -File`，命令里带中文或 `|`、`*` 时**写成 .ps1 文件再执行**，直接 `-Command` 极容易出现编码/引号解析错误（踩过多次）。
@@ -27,7 +27,7 @@ Windows 上跑 PowerShell 脚本务必用 `-NoProfile -ExecutionPolicy Bypass -F
 
 ```powershell
 # 杀掉所有 main.py 实例，然后用带 --disable-comfy-compiler 的参数重启
-powershell -NoProfile -ExecutionPolicy Bypass -File E:\VideoShotSplitter\wangliupu\clean_start.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File E:\h3swap\clean_start.ps1
 ```
 
 脚本行为：清残留实例 → `Win32_Process.Create` 拉起 → 轮询 `/system_stats` 返回 200 → 打印 `API_UP`。
@@ -42,7 +42,7 @@ main.py --listen 127.0.0.1 --port 8188 --enable-manager --use-sage-attention
 - `--disable-comfy-compiler`：避开 `comfy_aimdo malloc_graph → stack overflow` 的原生崩溃
 - `--disable-pinned-memory`：8 GB 卡上减少锁页占用
 
-旧脚本 `E:\VideoShotSplitter\vogue768\launch_comfyui_768.ps1` **不带** `--disable-comfy-compiler`，不要在关键任务前用它拉起服务。
+旧脚本 `E:\h3tools\launch_comfyui_768.ps1` **不带** `--disable-comfy-compiler`，不要在关键任务前用它拉起服务。
 
 ## 源片重采样
 
@@ -66,8 +66,8 @@ cmd /c "set WLP_W=1152&& set WLP_H=864&& set WLP_FRAMES=413&& ^
  set WLP_SEGS=51,51,51,51,51,51,51,56&& set WLP_CONT=1&& set WLP_CONT_OVL=5&& ^
  set WLP_NOREFINE=0&& set WLP_TILING=0&& set WLP_EXPORT=segments&& ^
  set WLP_SEED=9783&& set WLP_PREFIX=wlp_final&& set WLP_SRC=wangliupu_src24_hi.mp4&& ^
- set WLP_PROMPT=E:\VideoShotSplitter\wangliupu\wlp_prompt_v2.txt&& ^
- cd /d E:\VideoShotSplitter\wangliupu && E:\ComfyUI\venv\Scripts\python.exe wlp_build.py"
+ set WLP_PROMPT=E:\h3swap\wlp_prompt_v2.txt&& ^
+ cd /d E:\h3swap && E:\ComfyUI\venv\Scripts\python.exe wlp_build.py"
 ```
 
 成功输出 `WF ...json`、`frames=... segs=[...]`、`PID <prompt_id>`。
@@ -76,7 +76,7 @@ cmd /c "set WLP_W=1152&& set WLP_H=864&& set WLP_FRAMES=413&& ^
 
 两种方式：
 
-1. `E:\ComfyUI\venv\Scripts\python.exe E:\VideoShotSplitter\vogue768\watch_job.py <prompt_id> 7200` —— 每 30 秒打印 GPU/队列/日志尾，任务结束自动退出
+1. `E:\ComfyUI\venv\Scripts\python.exe E:\h3tools\watch_job.py <prompt_id> 7200` —— 每 30 秒打印 GPU/队列/日志尾，任务结束自动退出
 2. 直接读内存日志（最可靠，不受日志文件重定向影响）：
 
 ```bash

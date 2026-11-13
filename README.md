@@ -14,7 +14,7 @@
 
 ## 快速开始
 
-1. 把 `scripts/` 里的脚本放到 Win 的业务目录（示例：`E:\VideoShotSplitter\wangliupu\`）
+1. 把 `scripts/` 里的脚本放到 Win 的业务目录（示例：`E:\h3swap\`）
 2. 用 `win_clean_start.ps1` 启动 ComfyUI（必须带 `--disable-comfy-compiler`）
 3. 用 `build_h3_swap.py` 提交任务，参数全部走环境变量：
 
@@ -88,6 +88,22 @@ scripts/
 - 软件：ComfyUI + MiniMax H3 权重 + lightx2v 4 步 turbo LoRA + ffmpeg
 
 显存更小（<8 GB）不建议；显存 ≥16 GB 时可以把段长提到 73+ 并用 22 帧融合，成本会低很多。
+
+## 环境占位符对照
+
+公开版把本机信息替换成了占位符，clone 后按自己环境替换即可：
+
+| 占位符 | 含义 | 示例 |
+|---|---|---|
+| `<WIN_HOST>` | Windows 渲染机地址 | `192.0.2.10` |
+| `<WIN_USER>` | Windows 登录名 | `winuser` |
+| `<PORT>` | ComfyUI 端口 | `8188` |
+| `~/.ssh/id_win_gpu` | 连接渲染机的私钥 | 自己的 key 路径 |
+| `E:\h3swap` | Win 上的业务工作目录 | 任意目录 |
+| `E:\h3tools` | Win 上的监控脚本目录 | 任意目录 |
+| `<LOCAL_DELIVER_DIR>` | Mac 端成片交付目录 | 任意目录 |
+| `<LOCAL_LAN_DIR>` | 局域网进度页目录 | 任意目录 |
+| `<MAC_LAN_IP>` | 局域网页面地址 | `192.0.2.20` |
 
 ## License
 
